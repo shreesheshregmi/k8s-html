@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-world
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-world
+  template:
+    metadata:
+      labels:
+        app: hello-world
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: html-content
+          mountPath: /usr/share/nginx/html  # Mount to directory, not file
+          # subPath: index.html  # Remove this line
+      volumes:
+      - name: html-content
+        configMap:
+          name: hello-html
+          items:
+          - key: index.html    # Specify which key from the ConfigMap
+            path: index.html   # How it should appear in the volume
